@@ -19,7 +19,7 @@ pipeline {
         stage('Lint') {
             steps {
                 bat '''
-                    "%VIRTUAL_ENV%\\Scripts\\flake8.exe" app.py tests
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" -m flake8 app.py tests
                 '''
             }
         }
@@ -27,7 +27,7 @@ pipeline {
         stage('Test') {
             steps {
                 bat '''
-                    "%VIRTUAL_ENV%\\Scripts\\pytest.exe"
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" -m pytest
                 '''
             }
         }
@@ -35,10 +35,10 @@ pipeline {
         stage('Coverage') {
             steps {
                 bat '''
-                    "%VIRTUAL_ENV%\\Scripts\\coverage.exe" erase
-                    "%VIRTUAL_ENV%\\Scripts\\coverage.exe" run -m pytest
-                    "%VIRTUAL_ENV%\\Scripts\\coverage.exe" report -m
-                    "%VIRTUAL_ENV%\\Scripts\\coverage.exe" html
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" -m coverage erase
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" -m coverage run -m pytest
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" -m coverage report -m
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" -m coverage html
                 '''
             }
         }
@@ -46,7 +46,7 @@ pipeline {
         stage('Security Scan') {
             steps {
                 bat '''
-                    "%VIRTUAL_ENV%\\Scripts\\bandit.exe" -r app.py tests
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" -m bandit -r app.py tests
                 '''
             }
         }
