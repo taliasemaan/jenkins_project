@@ -8,68 +8,55 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                sh '''
-                    python3 -m venv ${VIRTUAL_ENV}
-                    . ${VIRTUAL_ENV}/bin/activate
-                    python -m pip install --upgrade pip
-                    pip install -r requirements.txt
+                bat '''
+                    python -m venv "%VIRTUAL_ENV%"
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" -m pip install --upgrade pip
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" -m pip install -r requirements.txt
                 '''
             }
         }
 
         stage('Lint') {
             steps {
-                sh '''
-                    . ${VIRTUAL_ENV}/bin/activate
-                    flake8 app.py tests
+                bat '''
+                    "%VIRTUAL_ENV%\\Scripts\\flake8.exe" app.py tests
                 '''
             }
         }
 
         stage('Test') {
             steps {
-                sh '''
-                    . ${VIRTUAL_ENV}/bin/activate
-                    pytest
+                bat '''
+                    "%VIRTUAL_ENV%\\Scripts\\pytest.exe"
                 '''
             }
         }
 
         stage('Coverage') {
             steps {
-                sh '''
-                    . ${VIRTUAL_ENV}/bin/activate
-                    coverage erase
-                    coverage run -m pytest
-                    coverage report -m
-                    coverage html
-                    coverage html
+                bat '''
+                    "%VIRTUAL_ENV%\\Scripts\\coverage.exe" erase
+                    "%VIRTUAL_ENV%\\Scripts\\coverage.exe" run -m pytest
+                    "%VIRTUAL_ENV%\\Scripts\\coverage.exe" report -m
+                    "%VIRTUAL_ENV%\\Scripts\\coverage.exe" html
                 '''
             }
         }
 
         stage('Security Scan') {
             steps {
-                sh '''
-                    . ${VIRTUAL_ENV}/bin/activate
-                    bandit -r app.py tests
+                bat '''
+                    "%VIRTUAL_ENV%\\Scripts\\bandit.exe" -r app.py tests
                 '''
             }
         }
 
         stage('Deploy') {
             steps {
-                sh '''
-                    . ${VIRTUAL_ENV}/bin/activate
-                    python deploy.py
+                bat '''
+                    "%VIRTUAL_ENV%\\Scripts\\python.exe" deploy.py
                 '''
             }
-        }
-    }
-
-    post {
-        always {
-            cleanWs()
         }
     }
 }
